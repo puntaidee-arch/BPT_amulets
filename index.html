@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📸 พระเครื่องแดนสยาม</title>
+<link href="styles/main.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+  พระเครื่องแดนสยาม
+  <div class="admin-badge" id="adminBadge">โหมดผู้ดูแลระบบ</div>
+</header>
+
+<!-- Login Overlay -->
+<div id="loginOverlay">
+  <h2>🔐 เข้าสู่ระบบแอดมิน</h2>
+  <input type="password" id="adminPass" placeholder="รหัสผ่านแอดมิน">
+  <button onclick="login()">เข้าสู่ระบบ</button>
+  <button onclick="closeLogin()">ยกเลิก</button>
+</div>
+
+<div id="app">
+  <div id="top-controls">
+    <select id="categorySelect"></select>
+    <input type="text" id="newCategory" placeholder="เพิ่มหมวดหมู่ใหม่..." class="admin-only">
+    <button onclick="addCategory()" class="admin-only">➕ เพิ่มหมวดหมู่</button>
+    <button onclick="deleteCategory()" class="admin-only">🗑️ ลบหมวดหมู่</button>
+    <input type="text" id="searchBox" placeholder="🔍 ค้นหารูป...">
+    <button onclick="showLogin()" id="loginBtn">🔐 เข้าสู่ระบบ</button>
+    <button onclick="logout()" class="admin-only">🚪 ออกจากระบบ</button>
+  </div>
+
+  <div id="upload-area" class="admin-only" onclick="document.getElementById('fileInput').click()">
+    <p><i class="fas fa-cloud-upload-alt" style="font-size:2rem;"></i></p>
+    <p>📤 คลิกเพื่ออัปโหลดรูปในหมวดหมู่ที่เลือก</p>
+    <input type="file" id="fileInput" accept="image/*" multiple style="display:none;">
+  </div>
+
+  <div class="album-section">
+    <h2><i class="fas fa-book"></i> จัดการอัลบั้ม</h2>
+    <div class="album-controls">
+      <input type="text" id="newAlbumName" placeholder="ชื่ออัลบั้มใหม่...">
+      <button onclick="createAlbum()" class="admin-only">📁 สร้างอัลบั้มใหม่</button>
+      <select id="albumSelect">
+        <option value="">-- เลือกอัลบั้ม --</option>
+      </select>
+      <button onclick="viewAlbum()" id="viewAlbumBtn">👁️ ดูอัลบั้ม</button>
+      <button onclick="deleteAlbum()" id="deleteAlbumBtn" class="admin-only">🗑️ ลบอัลบั้ม</button>
+    </div>
+    <div class="album-list" id="albumList"></div>
+  </div>
+
+  <div id="gallery"></div>
+</div>
+
+<footer>
+  <p>💾 เก็บข้อมูลถาวรในเครื่อง | พัฒนาโดยBPT❤️</p>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<div id="albumModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalAlbumTitle">อัลบั้ม</h3>
+      <button class="modal-close" onclick="closeAlbumModal()">&times;</button>
+    </div>
+    <div id="albumModalContent"></div>
+  </div>
+</div>
+
+<script src="scripts/app.js"></script>
+</body>
+</html>
