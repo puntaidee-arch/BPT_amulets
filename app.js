@@ -1,38 +1,63 @@
-let isAdmin=false;
-let data=JSON.parse(localStorage.getItem('photoVault'))||{categories:{},albums:{}};
+(function() {
+  'use strict';
 
-const catSelect=document.getElementById('categorySelect');
-const gallery=document.getElementById('gallery');
-const toast=document.getElementById('toast');
-const adminBadge=document.getElementById('adminBadge');
-const loginOverlay=document.getElementById('loginOverlay');
-const albumSelect=document.getElementById('albumSelect');
-const albumList=document.getElementById('albumList');
+  let data = JSON.parse(localStorage.getItem('photoVault')) || { categories: {}, albums: {} };
+  const catSelect = document.getElementById('categorySelect');
+  const gallery = document.getElementById('gallery');
+  const searchBox = document.getElementById('searchBox');
+  const albumModal = document.getElementById('albumModal');
+  const modalAlbumTitle = document.getElementById('modalAlbumTitle');
+  const albumModalContent = document.getElementById('albumModalContent');
 
-// Toast
-function showToast(msg,isError=false){toast.textContent=msg;toast.className='toast';if(isError) toast.classList.add('error');toast.classList.add('show');setTimeout(()=>{toast.classList.remove('show');},3000);}
+  function renderGallery(){
+    gallery.innerHTML='';
+    const search = searchBox.value.toLowerCase();
+    Object.keys(data.categories||{}).forEach(cat=>{
+      data.categories[cat].forEach(photo=>{
+        if(search && !photo.name.toLowerCase().includes(search) && !cat.toLowerCase().includes(search)) return;
+        const div = document.createElement('div'); div.className='photo';
+        div.innerHTML=`<img src="${photo.data}" alt="${photo.name}"><div class="photo-name">${photo.name}</div>`;
+        gallery.appendChild(div);
+      });
+    });
+    if(gallery.children.length===0){ gallery.innerHTML='<div class="empty-state"><i class="fas fa-image"></i> ไม่มีรูปภาพ</div>'; }
+  }
 
-// Save
-function saveData(){localStorage.setItem('photoVault',JSON.stringify(data));}
+  function loadCategories(){ 
+    catSelect.innerHTML='';
+    const keys=Object.keys(data.categories||{});
+    if(keys.length===0){ const opt=document.createElement('option'); opt.textContent='-- ยังไม่มีหมวดหมู่ --'; opt.disabled=true; opt.selected=true; catSelect.appendChild(opt);}
+    else keys.forEach(k=>{const opt=document.createElement('option'); opt.value=k; opt.textContent=k; catSelect.appendChild(opt);});
+  }
 
-// Login
-function showLogin(){loginOverlay.style.display='flex';}
-function closeLogin(){loginOverlay.style.display='none';}
-function login(){const pass=document.getElementById('adminPass').value;if(pass==='admin2888888882'){isAdmin=true;loginOverlay.style.display='none';document.querySelectorAll('.admin-only').forEach(el=>el.style.display=el.id==='upload-area'?'block':'inline-block');adminBadge.style.display='block';renderGallery();showToast('เข้าสู่ระบบผู้ดูแลระบบสำเร็จ');}else showToast('รหัสผ่านไม่ถูกต้อง',true);}
-function logout(){if(confirm('คุณต้องการออกจากระบบผู้ดูแลระบบหรือไม่?')){isAdmin=false;document.querySelectorAll('.admin-only').forEach(el=>el.style.display='none');adminBadge.style.display='none';renderGallery();showToast('ออกจากระบบสำเร็จ');}}
+  function viewAlbumByName(name){
+    modalAlbumTitle.textContent=name; albumModalContent.innerHTML='';
+    const photos=data.albums[name]?.photos||[];
+    if(photos.length===0) albumModalContent.innerHTML='<p>อัลบั้มว่าง</p>';
+    else photos.forEach(p=>{
+      const img=document.createElement('img'); img.src=p.data; img.style.width='100%'; img.style.marginBottom='10px';
+      albumModalContent.appendChild(img);
+    });
+    albumModal.style.display='flex';
+  }
 
-// Categories
-function loadCategories(){catSelect.innerHTML='';const keys=Object.keys(data.categories||{});if(keys.length===0){const opt=document.createElement('option');opt.textContent='-- ไม่มีหมวดหมู่ --';opt.disabled=true;opt.selected=true;catSelect.appendChild(opt);}else keys.forEach(k=>{const opt=document.createElement('option');opt.value=k;opt.textContent=k;catSelect.appendChild(opt);});}
-function addCategory(){if(!isAdmin){showToast('เฉพาะผู้ดูแลระบบ',true);return;}const name=prompt('ชื่อหมวดหมู่ใหม่:');if(!name)return;if(data.categories[name]){showToast('มีหมวดหมู่นี้อยู่แล้ว',true);return;}data.categories[name]=[];saveData();loadCategories();renderGallery();showToast(`เพิ่มหมวด "${name}" สำเร็จ`);}
-function deleteCategory(){if(!isAdmin){showToast('เฉพาะผู้ดูแลระบบ',true);return;}const cat=catSelect.value;if(!cat){showToast('ยังไม่มีหมวดหมู่ให้ลบ',true);return;}if(confirm(`ลบหมวด "${cat}" พร้อมรูปทั้งหมด?`)){delete data.categories[cat];saveData();loadCategories();renderGallery();showToast(`ลบหมวด "${cat}" สำเร็จ`);}}
-catSelect.addEventListener('change',renderGallery);
+  window.closeAlbumModal=function(){ albumModal.style.display='none'; };
 
-// Upload
-document.getElementById('fileInput').addEventListener('change',function(e){if(!isAdmin){showToast("เฉพาะผู้ดูแลระบบ",true);return;}const cat=catSelect.value;if(!cat||!data.categories[cat]){showToast('เลือกหมวดหมู่ก่อน',true);return;}const files=Array.from(e.target.files);files.forEach(f=>{if(!f.type.includes('image')){showToast(f.name+' ไม่ใช่รูป',true);return;}const reader=new FileReader();reader.onload=ev=>{data.categories[cat].push({name:f.name,src:ev.target.result});saveData();renderGallery();};reader.readAsDataURL(f);});});
+  // Load albums in gallery
+  function loadAlbums(){
+    Object.keys(data.albums||{}).forEach(name=>{
+      const card=document.createElement('div'); card.className='album-card'; card.onclick=()=>viewAlbumByName(name);
+      const cover=data.albums[name].photos[0]?.data||'https://via.placeholder.com/200x120?text=No+Image';
+      card.innerHTML=`<div class="album-cover" style="background-image:url('${cover}')"></div><div class="album-info"><div class="album-name">${name}</div><div class="album-count">${data.albums[name].photos.length} รูป</div></div>`;
+      gallery.appendChild(card);
+    });
+  }
 
-// Gallery
-function renderGallery(){gallery.innerHTML='';const cat=catSelect.value;const search=document.getElementById('searchBox').value.toLowerCase();if(!cat||!data.categories[cat])return;data.categories[cat].forEach((imgObj,i)=>{if(search&&!imgObj.name.toLowerCase().includes(search))return;const div=document.createElement('div');div.className='photo';div.innerHTML=`<img src="${imgObj.src}" alt="${imgObj.name}"><div class="photo-name">${imgObj.name}</div>`;if(isAdmin){const del=document.createElement('button');del.className='delete-btn';del.innerHTML='&times;';del.onclick=()=>{if(confirm('ลบรูปนี้หรือไม่?')){data.categories[cat].splice(i,1);saveData();renderGallery();}};div.appendChild(del);}gallery.appendChild(div);});}
+  searchBox.addEventListener('input', renderGallery);
 
-// Initial
-loadCategories();
-renderGallery();
+  // Initial load
+  loadCategories();
+  renderGallery();
+  loadAlbums();
+
+})();
