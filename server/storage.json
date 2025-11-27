@@ -1,1 +1,55 @@
+{
+  "categories": {
+    "พระยอดนิยม": [
+      {
+        "name": "พระสมเด็จวัดระฆัง",
+        "data": "https://images.pexels.com/photos/19067354/pexels-photo-19067354.jpeg"
+      },
+      {
+        "name": "พระเครื่องหลวงปู่ทวด",
+        "data": "https://images.pexels.com/photos/209944/pexels-photo-209944.jpeg"
+      }
+    ],
+    "พระเครื่องเก่า": [
+      {
+        "name": "พระนางพญา",
+        "data": "https://images.pexels.com/photos/326022/pexels-photo-326022.jpeg"
+      },
+      {
+        "name": "พระรอดลำพูน",
+        "data": "https://images.pexels.com/photos/209945/pexels-photo-209945.jpeg"
+      }
+    ]
+  },
+  "albums": {
+    "อัลบั้มงานบุญปี 2566": {
+      "photos": [
+        {
+          "name": "งานทำบุญวัด",
+          "data": "https://images.pexels.com/photos/327482/pexels-photo-327482.jpeg"
+        },
+        {
+          "name": "พิธีสงฆ์",
+          "data": "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg"
+        }
+      ]
+    },
+    "อัลบั้มท่องเที่ยววัด": {
+      "photos": [
+        {
+          "name": "วัดพระแก้ว",
+          "data": "https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg"
+        },
+        {
+          "name": "วัดอรุณราชวราราม",
+          "data": "https://images.pexels.com/photos/371589/pexels-photo-371589.jpeg"
+        },
+        {
+          "name": "วัดโพธิ์",
+          "data": "https://images.pexels.com/photos/341522/pexels-photo-341522.jpeg"
+        }
+      ]
+    }
+  }
+}
 
