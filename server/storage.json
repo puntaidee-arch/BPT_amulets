@@ -22,11 +22,11 @@
     ]
   },
   "albums": {
-    "อัลบั้มงานบุญปี 2566": {
+    "พระเครื่องกรุงเทพมหานคร": {
       "photos": [
         {
-          "name": "งานทำบุญวัด",
-          "data": "https://images.pexels.com/photos/327482/pexels-photo-327482.jpeg"
+          "name": "กรุงเทพมหานคร",
+          "data": "https://photos.google.com/album/AF1QipN8nB7lj9TJRK4eNHRcDLPaYHN1YNjW9yHgOF-d"
         },
         {
           "name": "พิธีสงฆ์",
@@ -52,4 +52,3 @@
     }
   }
 }
-
